@@ -1,0 +1,41 @@
+version: '3.1'
+
+services:
+  main:
+    restart: always
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        APP_HOME: '/main'
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - .:/main/
+    environment:
+      - APP_PORT=${APP_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    depends_on:
+      - db
+    command: uvicorn app.__main__:app --host 0.0.0.0 --port ${APP_PORT} --reload
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+
+volumes:
+  postgres_data:
