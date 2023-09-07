@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 
 from app.config import get_settings
 
@@ -27,6 +28,4 @@ async def get_session() -> AsyncSession:
         yield session
 
 
-__all__ = [
-    "get_session",
-]
+Session = sessionmaker(create_engine(get_settings().database_uri_sync()))
