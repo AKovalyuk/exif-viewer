@@ -22,4 +22,4 @@ class OperationError(BaseModel):
 class OperationResultResponse(BaseModel):
     operation_id: UUID
     status: OperationStatus
-    result: Optional[list[ExifKeyValue] | OperationError]
+    result: Optional[list[ExifKeyValue]]

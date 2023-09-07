@@ -7,14 +7,14 @@ from sqlalchemy import select
 from app.db.models import Operation, ExifRecord, OperationStatus
 
 
-async def create_operation(session: AsyncSession, initial_status=OperationStatus.RUNNING):
+async def create_operation(session: AsyncSession, initial_status=OperationStatus.RUNNING) -> Operation:
     operation = Operation(status=initial_status)
     session.add(operation)
     await session.commit()
-    return operation.id
+    return operation
 
 
-async def get_operation(session: AsyncSession, operation_id: UUID):
+async def get_operation(session: AsyncSession, operation_id: UUID) -> Operation | None:
     return await session.get(Operation, operation_id)
 
 
@@ -25,7 +25,7 @@ def create_exif_records(session: Session, operation_id: UUID, kw: dict[str, str]
     session.add_all(records)
 
 
-async def get_exif_records(session: AsyncSession, operation_id: UUID):
+async def get_exif_records(session: AsyncSession, operation_id: UUID) -> dict:
     query = select(ExifRecord).where(ExifRecord.operation_id == operation_id)
     result = {}
     for exif_record in await session.scalars(query):

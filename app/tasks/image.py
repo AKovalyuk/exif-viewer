@@ -10,7 +10,7 @@ from app.db.models import OperationStatus
 from app.celery import celery_app
 
 
-@celery_app.task
+@celery_app.task()
 def extract_exif_task(operation_id: UUID):
     image_path = Path(f'images/{operation_id}')
     try:

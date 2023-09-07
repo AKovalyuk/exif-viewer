@@ -23,6 +23,7 @@ services:
       - POSTGRES_HOST=${POSTGRES_HOST}
     depends_on:
       - db
+      - redis
     command: uvicorn app.__main__:app --host 0.0.0.0 --port ${APP_PORT} --reload
 
   db:
@@ -38,6 +39,18 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
+    env_file:
+      - .env
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
     env_file:
       - .env
 
